@@ -118,23 +118,48 @@ uint64_t stringToUint64(const char* str) {
     return result;
 }
 
-void uint64ToString(uint64_t value, char* str) {
-    if (value == 0) {
-        str[0] = '0';
-        str[1] = '\0';
-        return;
-    }
-    
-    int i = 0;
-    uint64_t temp = value;
-    while (temp > 0) {
-        i++;
-        temp /= 10;
-    }
-    
-    str[i] = '\0';
-    while (value > 0) {
-        str[--i] = '0' + (value % 10);
-        value /= 10;
-    }
+template <typename T>
+char *uint2str(T value, char *str, size_t max_len) {
+  if(max_len < 2) return nullptr;
+
+  if(value == 0) {
+    str[0] = '0';
+    str[1] = '\0';
+    return str;
+  }
+
+  auto t = value;
+
+  char *p = str + max_len - 1;
+  *p = '\0';
+
+  while(value > 0) {
+    if (p < str) return nullptr; // buffer was too short
+
+    auto next = value / 10;
+    *--p = '0' + (value - (next * 10)); //probs not worth it on stm32 has hard math unit?
+    value = next;
+  }
+  return p;
 }
+
+// void uint64ToString(uint64_t value, char* str) {
+//     if (value == 0) {
+//         str[0] = '0';
+//         str[1] = '\0';
+//         return;
+//     }
+    
+//     int i = 0;
+//     uint64_t temp = value;
+//     while (temp > 0) {
+//         i++;
+//         temp /= 10;
+//     }
+    
+//     str[i] = '\0';
+//     while (value > 0) {
+//         str[--i] = '0' + (value % 10);
+//         value /= 10;
+//     }
+// }
