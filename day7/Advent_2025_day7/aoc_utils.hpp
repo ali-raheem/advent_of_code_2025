@@ -1,7 +1,6 @@
 #pragma once
-
-template <typename T>
-T reduce(T (*op)(T, T), const T* data, int len) {
+template <typename T, typename F>
+T reduce(F&& op, const T* data, int len) {
     if (len == 0) return T(0);
     T res = data[0];
     for (int i = 1; i < len; i++) {
@@ -10,21 +9,21 @@ T reduce(T (*op)(T, T), const T* data, int len) {
     return res;
 }
 
-template <typename T>
-void map(T (*op)(T), T* data, int len) {
+template <typename T, typename F>
+void map(F&& op, T* data, int len) {
     for (int i = 0; i < len; i++)
         data[i] = op(data[i]);
 }
 
-template <typename T, typename U>
-void map(U (*op)(T), const T* data, U* out, int len) {
+template <typename T, typename U, typename F>
+void map(F&& op, const T* data, U* out, int len) {
     for (int i = 0; i < len; i++) {
         out[i] = op(data[i]);
     }
 }
 
-template <typename T>
-bool any(bool (*pred)(T), const T* list, int len) {
+template <typename T, typename F>
+bool any(F&& pred, const T* list, int len) {
     for (int i = 0; i < len; i++) {
         if (pred(list[i]))
             return true;
@@ -32,16 +31,16 @@ bool any(bool (*pred)(T), const T* list, int len) {
     return false;
 }
 
-template <typename T>
-bool all(bool (*pred)(T), const T* list, int len) {
+template <typename T, typename F>
+bool all(F&& pred, const T* list, int len) {
     for (int i = 0; i < len; i++)
         if (!pred(list[i]))
             return false;
     return true;
 }
 
-template <typename T>
-int filter(bool (*pred)(T), const T* list, T* out, int len) {
+template <typename T, typename F>
+int filter(F&& pred, const T* list, T* out, int len) {
     int count = 0;
     for (int i = 0; i < len; i++) {
         if (pred(list[i]))
@@ -50,22 +49,22 @@ int filter(bool (*pred)(T), const T* list, T* out, int len) {
     return count;
 }
 
-template <typename T, typename U>
-void zip(U (*op)(T, T), const T* a, const T* b, U* c, int len) {
+template <typename T, typename U, typename F>
+void zip(F&& op, const T* a, const T* b, U* c, int len) {
     for (int i = 0; i < len; i++) {
         c[i] = op(a[i], b[i]);
     }
 }
 
-template <typename T>
-void forEach(void (*op)(T), const T* list, int len) {
+template <typename T, typename F>
+void forEach(F&& op, const T* list, int len) {
     for (int i = 0; i < len; i++) {
         op(list[i]);
     }
 }
 
-template <typename T>
-int first(bool (*pred)(T), const T* list, int len) {
+template <typename T, typename F>
+int first(F&& pred, const T* list, int len) {
     for (int i = 0; i < len; i++) {
         if (pred(list[i]))
             return i;
@@ -73,8 +72,8 @@ int first(bool (*pred)(T), const T* list, int len) {
     return -1;
 }
 
-template <typename T>
-int count(bool (*pred)(T), const T* list, int len) {
+template <typename T, typename F>
+int count(F&& pred, const T* list, int len) {
     int total = 0;
     for (int i = 0; i < len; i++) {
         if (pred(list[i]))
@@ -83,8 +82,8 @@ int count(bool (*pred)(T), const T* list, int len) {
     return total;
 }
 
-template <typename T>
-bool none(bool (*pred)(T), const T* list, int len) {
+template <typename T, typename F>
+bool none(F&& pred, const T* list, int len) {
     return !any(pred, list, len);
 }
 

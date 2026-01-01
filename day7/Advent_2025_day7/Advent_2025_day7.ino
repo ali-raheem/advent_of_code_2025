@@ -28,6 +28,7 @@ void setup() {
     memset(buffer, '.', BUFFER_LEN);
     memset(buffer2, '.', BUFFER_LEN);
     Serial.println("Advent of Code Day 7");
+    Serial.println(__cplusplus); // was 201703 whoop!
     Serial.println("READY");
     
 }
@@ -54,10 +55,12 @@ void loop() {
         }
         
         if(lineCount == 0) {
-            for(int i = 0; i < len; i++) {
-                if(nextLine(lineCount)[i] == 'S')
-                    nextLine(lineCount)[i] = '|';
-            }
+            int i = first([](char c){ return c == 'S';}, nextLine(lineCount), len);
+            if (i > -1) nextLine(lineCount)[i] = '|';
+            // for(int i = 0; i < len; i++) {
+            //     if(nextLine(lineCount)[i] == 'S')
+            //         nextLine(lineCount)[i] = '|';
+            // }
         } else {
             for(int i = 0; i < len; i++) {
                 if(nextLine(lineCount)[i] == '.' && lastLine(lineCount)[i]!='^') {
@@ -65,12 +68,15 @@ void loop() {
                 } else if (nextLine(lineCount)[i] == '^') {
                     if(lastLine(lineCount)[i] == '|') {
                         password++; // beam hit a splitter so increment.
-                        if(i > 0 && nextLine(lineCount)[i - 1] == '.') {
-                            nextLine(lineCount)[i - 1] = '|';
-                        }
-                        if(i < len - 1 && nextLine(lineCount)[i + 1] == '.') {
-                            nextLine(lineCount)[i + 1] = '|';
-                        }
+                        nextLine(lineCount)[i - 1] = '|';
+                        nextLine(lineCount)[i + 1] = '|';
+
+                        // if(i > 0 && nextLine(lineCount)[i - 1] == '.') { // probs not needed I though I was counting unique splits
+                        //     nextLine(lineCount)[i - 1] = '|';
+                        // }
+                        // if(i < len - 1 && nextLine(lineCount)[i + 1] == '.') { // ditto
+                        //     nextLine(lineCount)[i + 1] = '|';
+                        // }
                     }
                 }
             }
