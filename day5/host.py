@@ -40,4 +40,4 @@ if __name__ == "__main__":
         print(f"Usage: {sys.argv[0]} <input_file> <port>")
         sys.exit(1)
 
-    send_with_handshake(sys.argv[2], sys.argv[1])
+    send(sys.argv[2], sys.argv[1])
