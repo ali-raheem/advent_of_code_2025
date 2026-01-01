@@ -54,34 +54,36 @@ void loop() {
             break;
         }
         
-        if(lineCount == 0) {
-            int i = first([](char c){ return c == 'S';}, nextLine(lineCount), len);
-            if (i > -1) nextLine(lineCount)[i] = '|';
-            // for(int i = 0; i < len; i++) {
-            //     if(nextLine(lineCount)[i] == 'S')
-            //         nextLine(lineCount)[i] = '|';
-            // }
-        } else {
-            for(int i = 0; i < len; i++) {
-                if(nextLine(lineCount)[i] == '.' && lastLine(lineCount)[i]!='^') {
-                    nextLine(lineCount)[i] = lastLine(lineCount)[i];
-                } else if (nextLine(lineCount)[i] == '^') {
-                    if(lastLine(lineCount)[i] == '|') {
-                        password++; // beam hit a splitter so increment.
+        for(int i = 0; i < len; i++) {
+            switch (nextLine(lineCount)[i]) {
+                case 'S':
+                    nextLine(lineCount)[i] = '|';
+                    break;
+                case '.':
+                    if (lastLine(lineCount != '^'))
+                        nextLine(lineCount)[i] = lastLine(lineCount)[i];
+                    break;
+                case '^':
+                    if (lastLine(lineCount)[i] == '|') {
+                        password++; // hit a splitter
                         nextLine(lineCount)[i - 1] = '|';
                         nextLine(lineCount)[i + 1] = '|';
+                        i += 1; // skip next byte.
+                    };
+                    break;
 
-                        // if(i > 0 && nextLine(lineCount)[i - 1] == '.') { // probs not needed I though I was counting unique splits
-                        //     nextLine(lineCount)[i - 1] = '|';
-                        // }
-                        // if(i < len - 1 && nextLine(lineCount)[i + 1] == '.') { // ditto
-                        //     nextLine(lineCount)[i + 1] = '|';
-                        // }
-                    }
-                }
             }
-        }
-        
+            // if (nextLine(lineCount)[i] == 'S') {
+            //     nextLine(lineCount)[i] == '|';
+            // }else if(nextLine(lineCount)[i] == '.' && lastLine(lineCount)[i]!='^') {
+            //     nextLine(lineCount)[i] = lastLine(lineCount)[i];
+            // }else if (nextLine(lineCount)[i] == '^' && lastLine(lineCount)[i] == '|') {
+            //     password++; // beam hit a splitter so increment.
+            //     nextLine(lineCount)[i - 1] = '|';
+            //     nextLine(lineCount)[i + 1] = '|';
+            //     }
+            }
+
         Serial.print("ACK ");
         Serial.println(nextLine(lineCount));
         lineCount++;
