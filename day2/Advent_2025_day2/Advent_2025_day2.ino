@@ -1,0 +1,97 @@
+constexpr int BUFFER_LEN = 64;
+constexpr int N_LEN = 24;
+
+uint64_t password = 0;
+
+void setup() {
+  Serial.begin(115200);
+  Serial.setTimeout(100);
+  Serial.println("Advent of Code 2025 Day 2");
+  Serial.println("READY");
+}
+
+uint64_t stringToUint64(const char* str) {
+  uint64_t result = 0;
+  while (*str) {
+    if (*str >= '0' && *str <= '9') {
+      result = result * 10 + (*str - '0');
+    }
+    str++;
+  }
+  return result;
+}
+
+void uint64ToString(uint64_t value, char* str) {
+  if (value == 0) {
+    str[0] = '0';
+    str[1] = '\0';
+    return;
+  }
+  
+  int i = 0;
+  uint64_t temp = value;
+  
+  while (temp > 0) {
+    i++;
+    temp /= 10;
+  }
+  
+  str[i] = '\0';
+    while (value > 0) {
+    str[--i] = '0' + (value % 10);
+    value /= 10;
+  }
+}
+
+void loop() {
+  if(Serial.available()) {
+    char first = Serial.peek();
+    if(first == 'R') {
+      Serial.read();
+      Serial.println("RESET");
+      password = 0;
+      return;
+    }
+    
+    char readBuffer[BUFFER_LEN];
+    
+    int len = Serial.readBytesUntil('-', readBuffer, BUFFER_LEN - 1);
+    readBuffer[len] = '\0';
+    uint64_t n = stringToUint64(readBuffer);
+    
+    len = Serial.readBytesUntil(',', readBuffer, BUFFER_LEN - 1);
+    readBuffer[len] = '\0';
+    uint64_t m = stringToUint64(readBuffer);
+    
+    for(uint64_t i = n; i <= m; i++) {
+      char ns[N_LEN];
+      char b[N_LEN];
+      
+      uint64ToString(i, ns);
+      len = strlen(ns);
+      
+      if (len % 2 == 1)
+        continue;
+      
+      if(len/2 >= N_LEN - 1) {
+        Serial.println("Overflow!");
+        continue;
+      }
+      
+      strncpy(b, ns, len/2);
+      b[len/2] = '\0';
+      
+      if(strncmp(b, &ns[len/2], len/2) == 0) {
+        password += i;
+        Serial.print("M:");
+        Serial.println(ns);
+        uint64ToString(password, ns);
+        Serial.print("P:");
+        Serial.println(ns);
+      }
+      
+    }
+    
+    Serial.println("DONE");
+  }
+}
