@@ -3,6 +3,7 @@ constexpr int BUFFER_LEN = 150;
 alignas(uint32_t) char buffer[BUFFER_LEN];
 alignas(uint32_t) char buffer2[BUFFER_LEN];
 int password = 0;
+int total = 0;
 
 char * nextLine(int lineCount) {
     if(lineCount % 2 == 0) {
@@ -42,7 +43,7 @@ int readLine(char *readBuffer) {
 
 void loop() {
     int lineCount = 0;
-    
+    bool newSplit;
     while (true) {
         len = readLine(nextLine(lineCount));
         if (len == 0) {
@@ -68,6 +69,9 @@ void loop() {
                         password++; // hit a splitter
                         nextLine(lineCount)[i - 1] = '|';
                         nextLine(lineCount)[i + 1] = '|';
+                        //if (lastLine(lineCount)[i - 1] != '|' || lastLine(lineCount)[i + 1] != '|') {
+                        newSplit = true;
+                        //}
                         i += 1; // skip next byte.
                     };
                     break;
@@ -84,14 +88,22 @@ void loop() {
             //     }
             }
 
+        if (newSplit) {
+            int beams = count([](char c){return c == '|';}, nextLine(lineCount), len);
+            total += beams;
+            newSplit = false;
+
+        }
         Serial.print("ACK ");
         Serial.println(nextLine(lineCount));
         lineCount++;
     }
     
-    Serial.print("RESULT(");
+    Serial.print("Number of splits ");
     Serial.print(password);
-    Serial.println(")");
+    Serial.print(" number of unique paths ");
+    Serial.print(total);
+    Serial.println(".");
     
     // halt
     while (true) {
