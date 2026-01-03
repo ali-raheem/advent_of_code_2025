@@ -10,7 +10,8 @@ with open('input', 'r') as f:
     print(f"Biggest Coord: {max([max(v) for v in vectors])}.")
     print(f"Smallest Coord: {min([min(v) for v in vectors])}.")
 
-fig, ax = plt.subplots()
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
 
 ax.scatter(*zip(*vectors))
 plt.savefig('space.png')
