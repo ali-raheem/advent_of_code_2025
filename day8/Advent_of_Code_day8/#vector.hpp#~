@@ -1,0 +1,13 @@
+#pragma once
+
+#include <array>
+#include <cmath>
+#include <numeric>
+
+template <typename T, size_t N>
+class Vector {
+private:
+  std::array<T, N> v;
+public:
+  template<typename... Args>
+  Vector(Args... args) : v{static_cast<T>(args)};
