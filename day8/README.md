@@ -8,3 +8,4 @@ u32 = 4 bytes, 3xu32 per vector = 12 bytes per vector.
 
 My first idea was to shift the vectors to be centred over the origin but the uniform distribution poo-pooed that.
 
+![Distribution of points](space.png)
